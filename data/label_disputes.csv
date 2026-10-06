@@ -1,0 +1,2 @@
+id,proposed_route,why
+19,code,"A refund is an account request like order status, not a health question. Sending it to the AI answer path wastes a model call and puts the name and DOB into an LLM prompt for no reason."

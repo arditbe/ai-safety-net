@@ -1,0 +1,13 @@
+flowchart LR
+    App[Patient app] --> GW[API Gateway]
+    GW --> SVC["Chat service<br/>(ECS Fargate, Python)"]
+    SVC --> R{"Router<br/>rules, no AI"}
+    R -->|escalate| ESC["SQS → care team inbox<br/>+ 911/988 message to patient now"]
+    R -->|code| CODE[Order / appointment / billing APIs]
+    R -->|faq| FAQ[Approved FAQ store]
+    R -->|refuse| REF[Refusal template]
+    R -->|answer| LLM["Bedrock: Sonnet 5.5<br/>approved sources in cached prompt"]
+    LLM --> G{"Output guard<br/>checks the draft"}
+    G -->|safe| OUT[Reply]
+    G -->|HANDOFF / no source / dose instruction| ESC
+    SVC -.-> LOG[("Audit log: route + reason<br/>KMS-encrypted, PII redacted")]
